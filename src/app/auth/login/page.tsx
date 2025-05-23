@@ -1,35 +1,42 @@
 "use client";
 import { useFormik } from "formik";
-import * as yup from 'yup'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '@/app/lib/firebase'
-import { useRouter } from 'next/navigation'
+import * as yup from 'yup';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/app/lib/firebase';
+import { useRouter } from 'next/navigation';
 
 function LoginPage() {
   const router = useRouter();
 
   const validationSchema = yup.object({
-      email: yup.string().email('Invalid email').required('Email is required'),
-      password: yup.string().min(4, 'Too short').max(12, 'Too long').required('Password is required'),
-    });
-
+    email: yup.string().email('Invalid email').required('Email is required'),
+    password: yup
+      .string()
+      .min(4, 'Too short')
+      .max(12, 'Too long')
+      .required('Password is required'),
+  });
 
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-    validationSchema: validationSchema,
+    validationSchema,
     onSubmit: async ({ email, password }) => {
       try {
-        await signInWithEmailAndPassword(auth, email, password)
-        router.push('/jobs')
-      } catch (err: any) {
-        alert(err.message)
+        await signInWithEmailAndPassword(auth, email, password);
+        router.push('/jobs');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          alert(err.message);
+        } else {
+          alert('An unexpected error occurred');
+        }
       }
     },
   });
-  
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm">
@@ -48,23 +55,24 @@ function LoginPage() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.email && formik.errors.email &&(
+          {formik.touched.email && formik.errors.email && (
             <div className="text-red-500 text-sm -mb-2">{formik.errors.email}</div>
           )}
 
           <input
             name="password"
-            className="border-b bg-transparent border-gray-500 focus:outline-none focus:border-white p-2"
             value={formik.values.password}
+            className="border-b bg-transparent border-gray-500 focus:outline-none focus:border-white p-2"
             type="password"
             id="password"
             placeholder="Password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.password && formik.errors.password &&(
+          {formik.touched.password && formik.errors.password && (
             <div className="text-red-500 text-sm -mb-2">{formik.errors.password}</div>
           )}
+
           <a
             href="#"
             className="text-sm text-right text-gray-400 hover:text-white hover:transition cursor-pointer"
@@ -79,8 +87,10 @@ function LoginPage() {
             Login
           </button>
           <p className="text-sm text-center text-gray-400">
-            Don't have an account? {''}
-            <a href='./register' className="text-white hover:underline cursor-pointer">Sign up</a>
+            Don&apos;t have an account?{' '}
+            <a href="./register" className="text-white hover:underline cursor-pointer">
+              Sign up
+            </a>
           </p>
         </form>
       </div>
