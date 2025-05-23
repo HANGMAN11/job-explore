@@ -1,25 +1,23 @@
-import LikeButton from "@/components/LikeButton";
-import { fetcher } from "../../lib/fetcher";
-import Link from "next/link";
-
-interface JobDetailPageProps {
-  params: {
-    id: string;
-  };
-}
+import Link from 'next/link'
+import { fetcher } from '@/app/lib/fetcher'
 
 async function getJobDetails(id: string) {
-  const url = `https://jsearch.p.rapidapi.com/job-details?job_id=${id}`;
-  const data = await fetcher(url);
-  return data?.data?.[0];
+  const url = `https://jsearch.p.rapidapi.com/job-details?job_id=${id}`
+  const data = await fetcher(url)
+  return data?.data?.[0]
 }
 
-async function JobDetailsPage({ params }: JobDetailPageProps) {
-  const job = await getJobDetails(params.id);
+export default async function JobDetailsPage({
+  params,
+}: {
+  params: { id: string }
+}) {
+  const job = await getJobDetails(params.id)
 
   if (!job) {
-    return <p className="text-center text-red-400">Jobs not found</p>;
+    return <p className="text-center text-red-400">Job not found</p>
   }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <Link
@@ -34,20 +32,16 @@ async function JobDetailsPage({ params }: JobDetailPageProps) {
         <p className="whitespace-pre-line text-sm mb-6">
           {job.job_description || "No description provided"}
         </p>
-
-        <div className="flex justify-between items-center">
-          <a
-            href={job.job_apply_link}
-            target="_blank"
-            className="text-blue-400 underline"
-          >
-            Apply now!
-          </a>
-          <LikeButton id={job.job_id} />
-        </div>
+        <a
+          href={job.job_apply_link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 underline"
+        >
+          Apply now
+        </a>
       </div>
     </div>
-  );
+  )
 }
 
-export default JobDetailsPage;
