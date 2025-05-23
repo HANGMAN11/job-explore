@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { fetcher } from '@/app/lib/fetcher'
+import Link from 'next/link'
 
 async function getJobDetails(id: string) {
   const url = `https://jsearch.p.rapidapi.com/job-details?job_id=${id}`
@@ -7,11 +7,13 @@ async function getJobDetails(id: string) {
   return data?.data?.[0]
 }
 
-export default async function JobDetailsPage({
-  params,
-}: {
-  params: { id: string }
-}) {
+type PageProps = {
+  params: {
+    id: string
+  }
+}
+
+export default async function JobDetailsPage({ params }: PageProps) {
   const job = await getJobDetails(params.id)
 
   if (!job) {
@@ -30,7 +32,7 @@ export default async function JobDetailsPage({
         <h1 className="text-2xl font-bold mb-2 text-center">{job.job_title}</h1>
         <p className="text-gray-400 mb-4 text-right">{job.employer_name}</p>
         <p className="whitespace-pre-line text-sm mb-6">
-          {job.job_description || "No description provided"}
+          {job.job_description || 'No description provided'}
         </p>
         <a
           href={job.job_apply_link}
@@ -44,4 +46,3 @@ export default async function JobDetailsPage({
     </div>
   )
 }
-
