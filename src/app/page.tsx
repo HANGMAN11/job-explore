@@ -1,7 +1,5 @@
-function page() {
-  return (
-    <h1>Your page</h1>
-  )
-}
+import { redirect } from 'next/navigation'
 
-export default page
+export default function Home() {
+  redirect('/auth/login')
+}
