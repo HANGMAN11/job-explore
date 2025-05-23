@@ -1,4 +1,3 @@
-// hooks/useProfile.ts
 'use client'
 import useSWR from 'swr'
 import { auth, db } from '@/app/lib/firebase'
@@ -15,17 +14,16 @@ const fetchProfile = async (): Promise<UserProfile | null> => {
   if (!user) throw new Error('Not authenticated')
 
   const snap = await getDoc(
-    doc(db, 'users', user.uid) 
+    doc(db, 'users', user.uid)
   )
 
   return snap.exists() ? (snap.data() as UserProfile) : null
 }
 
 export function useProfile() {
-      const user = auth.currentUser            
-  const uid = user?.uid                   
+  const user = auth.currentUser
   const { data, error, isValidating } = useSWR<UserProfile | null>(
-    user ? ['profile', user.uid] : null, 
+    user ? ['profile', user.uid] : null,
     fetchProfile
   )
 
