@@ -25,13 +25,17 @@ function RegisterPage() {
       password: "",
       username: "",
     },
-    validationSchema: validationSchema,
+    validationSchema,
     onSubmit: async ({ email, password }) => {
       try {
         await createUserWithEmailAndPassword(auth, email, password);
         router.push("/create-profile");
-      } catch (err: any) {
-        alert(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          alert(err.message);
+        } else {
+          alert("An unexpected error occurred");
+        }
       }
     },
   });
@@ -78,8 +82,8 @@ function RegisterPage() {
 
           <input
             name="password"
-            className="border-b bg-transparent border-gray-500 focus:outline-none focus:border-white p-2"
             value={formik.values.password}
+            className="border-b bg-transparent border-gray-500 focus:outline-none focus:border-white p-2"
             type="password"
             id="password"
             placeholder="Password"
@@ -99,7 +103,7 @@ function RegisterPage() {
             Sign up
           </button>
           <p className="text-sm text-center text-gray-400">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{' '}
             <Link
               href="/auth/register"
               className="text-white hover:underline cursor-pointer"
